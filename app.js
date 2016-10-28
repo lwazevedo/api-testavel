@@ -1,4 +1,4 @@
-import express from 'express';
+import express from 'express'; //Igual ao require
 
 const app = express();
 
@@ -10,4 +10,5 @@ app.route('/books')
         }]);
     });
 
+//Igual exports.module
 export default app;
