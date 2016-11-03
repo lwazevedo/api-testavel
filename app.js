@@ -13,7 +13,5 @@ const Books = app.datasource.models.Books;
 booksRouter(app, Books);
 
 
-
-
 // Igual exports.module
 export default app;
