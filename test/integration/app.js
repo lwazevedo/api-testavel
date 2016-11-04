@@ -3,6 +3,7 @@ describe('Routes Books', () => {
   const defaultBook = {
     id: 1,
     name: 'Default Book',
+    description: 'Default description',
   };
 
   beforeEach((done) => {
@@ -23,7 +24,7 @@ describe('Routes Books', () => {
                 .end((err, res) => {
                   expect(res.body[0].id).to.be.eql(defaultBook.id);
                   expect(res.body[0].name).to.be.eql(defaultBook.name);
-
+                  expect(res.body[0].description).to.be.eql(defaultBook.description);
                   done(err);
                 });
     });
@@ -36,6 +37,7 @@ describe('Routes Books', () => {
                 .end((err, res) => {
                   expect(res.body.id).to.be.eql(defaultBook.id);
                   expect(res.body.name).to.be.eql(defaultBook.name);
+                  expect(res.body.description).to.be.eql(defaultBook.description);
 
                   done(err);
                 });
@@ -47,6 +49,7 @@ describe('Routes Books', () => {
       const newBook = {
         id: 2,
         name: 'newBook',
+        description: 'newDescription',
       };
       request
                 .post('/books')
@@ -54,7 +57,7 @@ describe('Routes Books', () => {
                 .end((err, res) => {
                   expect(res.body.id).to.be.eql(newBook.id);
                   expect(res.body.name).to.be.eql(newBook.name);
-
+                  expect(res.body.description).to.be.eql(newBook.description);
                   done(err);
                 });
     });
