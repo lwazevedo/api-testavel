@@ -1,20 +1,36 @@
 describe('Routes Books', () => {
   const Books = app.datasource.models.Books;
+  const Users = app.datasource.models.Users;
+  const jwtSecret = app.config.jwtSecret;
+
   const defaultBook = {
     id: 1,
     name: 'Default Book',
     description: 'Default description',
   };
 
+  let token;
+
+
   beforeEach((done) => {
-    Books
-            .destroy({
-              where: {},
-            })
-            .then(() => Books.create(defaultBook))
-            .then(() => {
-              done();
-            });
+    Users
+    .destroy({ where: {} })
+    .then(() => Users.create({
+      name: 'John',
+      email: 'John@email.com',
+      password: '12345',
+    }))
+    .then((user) => {
+      Books
+      .destroy({
+        where: {},
+      })
+      .then(() => Books.create(defaultBook))
+      .then(() => {
+        token = jwt.encode({ id: user.id }, jwtSecret);
+        done();
+      });
+    });
   });
 
   describe('Route GET /books', () => {
@@ -28,11 +44,12 @@ describe('Routes Books', () => {
       }));
 
       request
-                .get('/books')
-                .end((err, res) => {
-                  joiAssert(res.body, booksList);
-                  done(err);
-                });
+      .get('/books')
+      .set('Authorization', `JWT ${token}`)
+      .end((err, res) => {
+        joiAssert(res.body, booksList);
+        done(err);
+      });
     });
   });
 
@@ -47,11 +64,12 @@ describe('Routes Books', () => {
       });
 
       request
-                .get('/books/1')
-                .end((err, res) => {
-                  joiAssert(res.body, book);
-                  done(err);
-                });
+      .get('/books/1')
+      .set('Authorization', `JWT ${token}`)
+      .end((err, res) => {
+        joiAssert(res.body, book);
+        done(err);
+      });
     });
   });
 
@@ -72,12 +90,13 @@ describe('Routes Books', () => {
       });
 
       request
-                .post('/books')
-                .send(newBook)
-                .end((err, res) => {
-                  joiAssert(res.body, book);
-                  done(err);
-                });
+      .post('/books')
+      .set('Authorization', `JWT ${token}`)
+      .send(newBook)
+      .end((err, res) => {
+        joiAssert(res.body, book);
+        done(err);
+      });
     });
   });
   describe('Route PUT /books/{id}', () => {
@@ -90,23 +109,25 @@ describe('Routes Books', () => {
 
       const updatedCount = Joi.array().items(1);
       request
-                .put('/books/1')
-                .send(updateBook)
-                .end((err, res) => {
-                  joiAssert(res.body, updatedCount);
-                  done(err);
-                });
+      .put('/books/1')
+      .set('Authorization', `JWT ${token}`)
+      .send(updateBook)
+      .end((err, res) => {
+        joiAssert(res.body, updatedCount);
+        done(err);
+      });
     });
   });
 
   describe('Route DELETE /books/{id}', () => {
     it('should delete a books', (done) => {
       request
-                .delete('/books/1')
-                .end((err, res) => {
-                  expect(res.statusCode).to.be.eql(204);
-                  done(err);
-                });
+      .delete('/books/1')
+      .set('Authorization', `JWT ${token}`)
+      .end((err, res) => {
+        expect(res.statusCode).to.be.eql(204);
+        done(err);
+      });
     });
   });
 });
