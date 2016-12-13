@@ -15,20 +15,21 @@ export default (app) => {
           email,
         },
       })
-                .then((user) => {
-                  if (Users.isPassword(user.password, password)) {
-                    const payload = {
-                      id: user.id,
-                    };
-                    res.json({
-                      token: jwt.encode(payload, config.jwtSecret),
-                    });
-                  } else {
-                    res.sendStatus(HttpStatus.UNAUTHORIZED);
-                  }
-                })
-                .catch(() => res.sendStatus(HttpStatus.UNAUTHORIZED));
+      .then((user) => {
+        if (Users.isPassword(user.password, password)) {
+          const payload = {
+            id: user.id,
+          };
+          res.json({
+            token: jwt.encode(payload, config.jwtSecret),
+          });
+        } else {
+          res.sendStatus(HttpStatus.UNAUTHORIZED);
+        }
+      })
+      .catch(() => res.sendStatus(HttpStatus.UNAUTHORIZED));
     } else {
+      console.log('else')
       res.sendStatus(HttpStatus.UNAUTHORIZED);
     }
   });
